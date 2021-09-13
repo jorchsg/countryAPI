@@ -9,29 +9,28 @@ namespace sample01.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryController : ControllerBase
+    public class StateController : Controller
     {
-        // GET: api/Country
+        // GET: api/State
         [HttpGet]
         public ActionResult Get()
         {
-            CountryListViewModel vm = new CountryListViewModel();
+            StateListViewModel vm = new StateListViewModel();
             vm.Status = 0;
-            vm.Countries = Country.GetAll();
+            vm.States = State.GetAll();
             return Ok(vm);
         }
-
         // GET: api/Country/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
             try
             {
-                Country c = new Country(id);
-                CountryViewModel vm = new CountryViewModel();
+                State s = new State(id);
+                StateViewModel vm = new StateViewModel();
                 vm.Status = 0;
-                vm.Country = c;
-                vm.States = c.GetStates(id);
+                vm.State = s;
+                vm.Cities = s.GetCities(id);
                 return Ok(vm);
             }
             catch (RecordNotFoundException ex)
@@ -42,12 +41,11 @@ namespace sample01.Controllers
                 return Ok(vm);
             }
         }
-
         [HttpGet]
         [Route("[action]/{id}")]
-        public ActionResult ByContinent(string id_country)
+        public ActionResult ByContinent(string id_state)
         {
-            return Ok("Getting countries from continent " + id_country);
+            return Ok("Getting countries from continent " + id_state);
         }
 
         // POST: api/Country

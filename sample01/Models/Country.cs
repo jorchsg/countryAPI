@@ -10,7 +10,8 @@ public class Country
 {
     #region Properties
 
-    public string Id { get; set; }
+    public int Id { get; set; }
+    public string Id_country { get; set; }
     public string Name { get; set; }
 
     #endregion
@@ -19,35 +20,37 @@ public class Country
 
     public Country()
     {
-        Id = "";
+        Id = 0;
+        Id_country = "";
         Name = "";
     }
 
-    public Country(string id)
+    public Country(int id)
     {
-        string query = "select id, name from countries order by name";
+        string query = "select id, id_country, name from countries  where id=@id order by name";
         SqlCommand command = new SqlCommand(query);
         command.Parameters.AddWithValue("@id", id);
         DataTable table = SqlServerConnection.GetConnection().ExecuteQuery(command);
         if(table.Rows.Count > 0)
         {
             DataRow row = table.Rows[0];
-            Id = (string)row["id"];
+            Id = (int)row["id"];
+            Id_country = (string)row["id_country"];
             Name = (string)row["name"];
         }
-
         else
-            throw new RecordNotFoundException(GetType().ToString(), id);
+            throw new RecordNotFoundException(GetType().ToString(), id.ToString());
     }
 
-    public Country(string id, string name)
+    public Country(int id, string id_country, string name)
     {
         Id = id;
-
-        if (id == "MEX")
-            Name = name;
-        else
-            throw new RecordNotFoundException(GetType().ToString(), id);
+        Id_country = id_country;
+        Name = name;
+        //if (id_country == "CAN")
+        //    Name = name;
+        //else
+        //    throw new RecordNotFoundException(GetType().ToString(), id_country);
     }
 
     #endregion
@@ -55,12 +58,24 @@ public class Country
 
     #region instance methods
     
-    public List<State> GetStates()
+    public List<State> GetStates(int fk_country)
     {
+        
         List<State> list = new List<State>();
-        list.Add(new State("BC", "Baja California"));
-        list.Add(new State("SIN", "Sinaloa"));
-        list.Add(new State("SON", "Sonora"));
+        
+        string query = "select id, id_state, name from states where fk_country=@fk_country order by name";
+        SqlCommand command = new SqlCommand(query);
+        command.Parameters.AddWithValue("@fk_country", fk_country);
+        DataTable table = SqlServerConnection.GetConnection().ExecuteQuery(command);
+        foreach (DataRow row in table.Rows)
+        {
+            int id = (int)row["id"];
+            string id_state = (string)row["id_state"];
+            string name = (string)row["name"];
+            list.Add(new State(id, id_state, name));
+        }
+
+        //return list
         return list;
     }
 
@@ -81,14 +96,15 @@ public class Country
         list.Add(new Country("USA", "United States"));
         */
 
-        string query = "select id, name from countries order by name";
+        string query = "select id, id_country, name from countries order by name";
         SqlCommand command = new SqlCommand(query);
         DataTable table = SqlServerConnection.GetConnection().ExecuteQuery(command);
         foreach (DataRow row in table.Rows)
         {
-            string id = (string)row["id"];
+            int id = (int)row["id"];
+            string id_country = (string)row["id_country"];
             string name = (string)row["name"];
-            list.Add(new Country(id, name));
+            list.Add(new Country(id, id_country, name));
         }
 
         //return list

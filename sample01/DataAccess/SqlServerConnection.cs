@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 class SqlServerConnection
 {
     private static SqlServerConnection instance;
-    private string connectionString = "Data Source=DESKTOP-I02R4ND; Initial Catalog=world2021; User Id=sa; Integrated Security = true;";
+    private string connectionString = "Data Source=GILDARDO; Initial Catalog=world2021; User Id=sa; Password=sqlserver; Integrated Security = true;";
     private SqlConnection connection;
 
     //constructor
